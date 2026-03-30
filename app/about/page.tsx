@@ -62,7 +62,7 @@ export default function AboutPage() {
                     </div>
                     <div className="space-y-3">
                         <Button asChild className="w-full h-12 rounded-2xl text-sm font-medium bg-gray-900 text-white hover:bg-gray-800 transition-all shadow-lg shadow-gray-200">
-                            <a href="https://github.com/alok-x/OurDiary" target="_blank" rel="noopener noreferrer">
+                            <a href="https://github.com/AlokMahapatra26" target="_blank" rel="noopener noreferrer">
                                 <Code className="h-4 w-4 mr-2" />
                                 Contribute on GitHub
                                 <ExternalLink className="h-3 w-3 ml-2 opacity-50" />
@@ -84,8 +84,9 @@ export default function AboutPage() {
                                     </div>
                                     <link rel="stylesheet" href="buymeacoffee.com/alokmahapatra" />
                                     <Button variant="outline" size="sm" className="rounded-full h-8 px-4 text-[10px] font-bold uppercase tracking-wider bg-white">
-
+                                        Support
                                     </Button>
+
                                 </div>
                             </CardContent>
                         </Card>
