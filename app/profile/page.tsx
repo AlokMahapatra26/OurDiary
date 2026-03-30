@@ -6,8 +6,9 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter }
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import DeleteAccountButton from './DeleteAccountButton'
-import { Download, LogOut, Settings, User } from 'lucide-react'
+import { Download, LogOut, Settings, User, Terminal } from 'lucide-react'
 import { Separator } from '@/components/ui/separator'
+import DevModeToggle from '@/components/DevModeToggle'
 
 export default async function ProfilePage({
     searchParams,
@@ -28,7 +29,7 @@ export default async function ProfilePage({
 
     return (
         <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gray-50 via-white to-gray-100 flex items-center justify-center p-4">
-            <div className="w-full max-w-md space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 pb-24">
+            <div className="w-full max-w-md space-y-8 animate-bouncy pb-24">
                 <div className="text-center space-y-2">
                     <div className="inline-flex p-3 rounded-2xl bg-white shadow-sm border border-gray-100 mb-2">
                         <User className="h-6 w-6 text-gray-900" />
@@ -60,6 +61,11 @@ export default async function ProfilePage({
                                 {params.message as string}
                             </div>
                         )}
+
+                        <div className="space-y-4">
+                            <DevModeToggle />
+                            <Separator className="bg-border/50" />
+                        </div>
 
                         <div className="space-y-2">
                             <Label className="text-xs text-muted-foreground">Email address</Label>

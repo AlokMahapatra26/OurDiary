@@ -1,24 +1,29 @@
+'use client'
+
+import { useState, use } from 'react'
 import { signup } from './actions'
 import { SubmitButton } from '@/components/ui/SubmitButton'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Label } from '@/components/ui/label'
 import Link from 'next/link'
-import { Bomb } from 'lucide-react'
+import { Book, Eye, EyeOff } from 'lucide-react'
 
-export default async function SignupPage({
+export default function SignupPage({
     searchParams,
 }: {
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>
 }) {
-    const params = await searchParams
+    const params = use(searchParams)
+    const [showPassword, setShowPassword] = useState(false)
+    const [showConfirmPassword, setShowConfirmPassword] = useState(false)
 
     return (
         <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gray-50 via-white to-gray-100 flex items-center justify-center p-4">
-            <div className="w-full max-w-sm space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+            <div className="w-full max-w-sm space-y-8 animate-bouncy">
                 <div className="text-center space-y-2">
                     <div className="inline-flex p-3 rounded-2xl bg-white shadow-sm border border-gray-100 mb-2">
-                        <Bomb className="h-6 w-6 text-primary fill-primary/10" />
+                        <Book className="h-6 w-6 text-primary fill-primary/10" />
                     </div>
                     <h1 className="text-2xl font-semibold tracking-tight text-gray-900">Start your journey</h1>
                     <p className="text-sm text-muted-foreground italic">A private space for two souls.</p>
@@ -78,14 +83,46 @@ export default async function SignupPage({
 
                             <div className="space-y-2.5">
                                 <Label htmlFor="password">Password</Label>
-                                <Input
-                                    id="password"
-                                    name="password"
-                                    type="password"
-                                    required
-                                    autoComplete="new-password"
-                                    placeholder="Min 6 characters"
-                                />
+                                <div className="relative">
+                                    <Input
+                                        id="password"
+                                        name="password"
+                                        type={showPassword ? 'text' : 'password'}
+                                        required
+                                        autoComplete="new-password"
+                                        placeholder="Min 6 characters"
+                                        className="pr-10"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowPassword(!showPassword)}
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                                    >
+                                        {showPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                    </button>
+                                </div>
+                            </div>
+
+                            <div className="space-y-2.5">
+                                <Label htmlFor="confirm_password">Confirm Password</Label>
+                                <div className="relative">
+                                    <Input
+                                        id="confirm_password"
+                                        name="confirm_password"
+                                        type={showConfirmPassword ? 'text' : 'password'}
+                                        required
+                                        autoComplete="new-password"
+                                        placeholder="Repeat your password"
+                                        className="pr-10"
+                                    />
+                                    <button
+                                        type="button"
+                                        onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+                                        className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                                    >
+                                        {showConfirmPassword ? <EyeOff className="h-4 w-4" /> : <Eye className="h-4 w-4" />}
+                                    </button>
+                                </div>
                             </div>
 
                             <SubmitButton

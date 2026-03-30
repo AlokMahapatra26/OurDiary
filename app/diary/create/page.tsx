@@ -15,7 +15,7 @@ export default async function CreateDiaryPage() {
 
     return (
         <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gray-50 via-white to-gray-100 flex items-center justify-center p-4">
-            <div className="w-full max-w-sm space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+            <div className="w-full max-w-sm space-y-8 animate-bouncy">
                 <div className="text-center space-y-2">
                     <div className="inline-flex p-3 rounded-2xl bg-white shadow-sm border border-gray-100 mb-2">
                         <BookPlus className="h-6 w-6 text-gray-900" />

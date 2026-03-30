@@ -7,7 +7,7 @@ import { SubmitButton } from '@/components/ui/SubmitButton'
 import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card'
 import { Button } from '@/components/ui/button'
 import Link from 'next/link'
-import { Bomb, Plus, Mail, ArrowRight, BookOpen, Clock } from 'lucide-react'
+import { Book, Plus, Mail, ArrowRight, BookOpen, Clock } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 export default async function Home() {
@@ -46,10 +46,10 @@ export default async function Home() {
 
   return (
     <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gray-50 via-white to-gray-100 flex items-center justify-center p-4">
-      <div className="w-full max-w-sm space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 pb-20">
+      <div className="w-full max-w-sm space-y-8 animate-bouncy pb-20">
         <div className="text-center space-y-2">
           <div className="inline-flex p-3 rounded-2xl bg-white shadow-sm border border-gray-100 mb-2">
-            <Bomb className="h-6 w-6 text-primary fill-primary/10" />
+            <Book className="h-6 w-6 text-primary fill-primary/10" />
           </div>
           <h1 className="text-2xl font-semibold tracking-tight text-gray-900 font-serif">OurDiary</h1>
           {user ? (
@@ -70,7 +70,7 @@ export default async function Home() {
                   <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/60">Your Memoirs</span>
                 </div>
                 {userDiaries.map(d => (
-                  <Card key={d.id} className="group border-border/40 shadow-lg shadow-gray-200/40 hover:shadow-xl hover:shadow-gray-200/60 transition-all duration-500 overflow-hidden bg-white/80 backdrop-blur-sm">
+                  <Card key={d.id} className="group border-border/40 shadow-lg shadow-gray-200/40 hover:shadow-xl hover:shadow-gray-200/60 transition-all duration-200 overflow-hidden bg-white/80 backdrop-blur-sm">
                     <Link href={`/diary/${d.id}`} className="block p-5">
                       <div className="flex items-center justify-between">
                         <div className="space-y-1">
@@ -124,7 +124,7 @@ export default async function Home() {
                             <input type="hidden" name="invitationId" value={inv.id} />
                             <input type="hidden" name="diaryId" value={inv.diaryId} />
                             <SubmitButton
-                              iconName="bomb"
+                              iconName="book"
                               pendingText="..."
                               className="w-full h-9 rounded-xl text-xs"
                             >
@@ -154,7 +154,7 @@ export default async function Home() {
             <Button asChild className="w-full h-12 rounded-2xl text-sm font-medium shadow-xl shadow-gray-200">
               <Link href="/login">Sign in to your story</Link>
             </Button>
-            <Button asChild variant="outline" className="w-full h-12 rounded-2xl text-sm font-medium border-border/60 hover:bg-white transition-all">
+            <Button asChild variant="outline" className="w-full h-12 rounded-2xl text-sm font-medium border-border/60 hover:bg-white transition-all duration-200">
               <Link href="/signup">Join OurDiary</Link>
             </Button>
           </div>

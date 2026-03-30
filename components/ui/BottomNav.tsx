@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Bomb, Home, User } from 'lucide-react'
+import { Book, Home, User } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 export function BottomNav() {
@@ -14,7 +14,7 @@ export function BottomNav() {
     ]
 
     return (
-        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 animate-in fade-in slide-in-from-bottom-8 duration-700 delay-1000">
+        <div className="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 animate-bouncy">
             <nav className="flex items-center gap-2 p-2 bg-white/70 backdrop-blur-xl border border-white/40 shadow-[0_8px_32px_rgba(0,0,0,0.12)] rounded-3xl">
                 {tabs.map((tab) => {
                     const Icon = tab.icon

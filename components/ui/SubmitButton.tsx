@@ -1,7 +1,7 @@
 'use client'
 
 import { useFormStatus } from 'react-dom'
-import { Loader2, UserPlus, LogIn, Save, LogOut, Trash2, LucideIcon, Bomb, Send, PenLine, Sparkles } from 'lucide-react'
+import { Loader2, UserPlus, LogIn, Save, LogOut, Trash2, LucideIcon, Book, Send, PenLine, Sparkles } from 'lucide-react'
 import { Button } from '@/components/ui/button'
 
 const iconMap: Record<string, LucideIcon> = {
@@ -10,7 +10,7 @@ const iconMap: Record<string, LucideIcon> = {
     'save': Save,
     'log-out': LogOut,
     'trash': Trash2,
-    'bomb': Bomb,
+    'book': Book,
     'send': Send,
     'pen-line': PenLine,
     'sparkles': Sparkles,

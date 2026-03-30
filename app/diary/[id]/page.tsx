@@ -12,7 +12,7 @@ import { getAdminClient } from '@/utils/supabase/admin'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
 import { Badge } from '@/components/ui/badge'
-import { Bomb, Home, UserPlus, Calendar as CalendarIcon, ArrowLeft } from 'lucide-react'
+import { Book, Home, UserPlus, Calendar as CalendarIcon, ArrowLeft } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 export default async function DiaryPage({
@@ -69,7 +69,7 @@ export default async function DiaryPage({
 
     return (
         <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gray-50 via-white to-gray-100 pb-32">
-            <div className="w-full max-w-md mx-auto p-4 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+            <div className="w-full max-w-md mx-auto p-4 space-y-8 animate-bouncy">
                 {/* Header */}
                 <div className="flex flex-col gap-6 pt-4">
                     <div className="flex items-center justify-between">
@@ -92,7 +92,7 @@ export default async function DiaryPage({
                     <div className="space-y-1">
                         <h1 className="text-2xl font-semibold tracking-tight text-gray-900 flex items-center gap-2">
                             {diary.name}
-                            <Bomb className={cn("h-4 w-4 fill-primary/10 text-primary transition-all", isViewingToday ? "scale-110 animate-pulse" : "opacity-30")} />
+                            <Book className={cn("h-4 w-4 fill-primary/10 text-primary transition-all", isViewingToday ? "scale-110 animate-pulse" : "opacity-30")} />
                         </h1>
                         <div className="flex items-center gap-2">
                             <CalendarIcon className="h-3 w-3 text-muted-foreground" />
@@ -105,10 +105,7 @@ export default async function DiaryPage({
                 <DiaryWriteSection
                     diaryId={id}
                     diaryDate={selectedDate}
-                    isViewingToday={isViewingToday}
-                    isWindowOpen={isWindowOpenNow}
                     hasExistingEntry={!!myEntry}
-                    windowMessage={windowMsg}
                     submitAction={submitEntry}
                 />
 
@@ -126,7 +123,7 @@ export default async function DiaryPage({
                     <div className="absolute left-6 top-2 bottom-2 w-px bg-gradient-to-b from-border/50 via-border/50 to-transparent" />
 
                     {/* My Entry */}
-                    <div className="relative z-10 flex gap-4 animate-in fade-in slide-in-from-left-4 duration-700 delay-200">
+                    <div className="relative z-10 flex gap-4 animate-bouncy">
                         <Avatar className="h-9 w-9 border-2 border-white shadow-sm shrink-0">
                             <AvatarFallback className="bg-gray-900 text-white text-[10px]">
                                 {user.user_metadata?.name?.charAt(0) || user.email?.charAt(0)}
@@ -152,7 +149,7 @@ export default async function DiaryPage({
 
                     {/* Partner Entry */}
                     {partnerMemberId && (
-                        <div className="relative z-10 flex gap-4 animate-in fade-in slide-in-from-left-4 duration-700 delay-500">
+                        <div className="relative z-10 flex gap-4 animate-bouncy">
                             <Avatar className="h-9 w-9 border-2 border-white shadow-sm shrink-0">
                                 <AvatarFallback className="bg-primary/10 text-primary text-[10px]">
                                     {partnerName.charAt(0)}
@@ -178,7 +175,7 @@ export default async function DiaryPage({
                     )}
 
                     {!partnerMemberId && isViewingToday && (
-                        <div className="relative z-10 flex gap-4 animate-in fade-in slide-in-from-left-4 duration-700 delay-500">
+                        <div className="relative z-10 flex gap-4 animate-bouncy">
                             <Avatar className="h-9 w-9 border-2 border-white shadow-sm shrink-0">
                                 <AvatarFallback className="bg-gray-100 text-gray-300">
                                     ?
