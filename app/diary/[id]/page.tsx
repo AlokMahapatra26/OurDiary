@@ -8,6 +8,7 @@ import { getWindowStatus } from '@/lib/time'
 import { submitEntry } from './actions'
 import { DiaryWriteSection } from '@/components/DiaryWriteSection'
 import { DateFilter } from '@/components/DateFilter'
+import { MyDiaryEntry } from '@/components/MyDiaryEntry'
 import { getAdminClient } from '@/utils/supabase/admin'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback } from '@/components/ui/avatar'
@@ -92,7 +93,7 @@ export default async function DiaryPage({
                     <div className="space-y-1">
                         <h1 className="text-2xl font-semibold tracking-tight text-gray-900 flex items-center gap-2">
                             {diary.name}
-                            <Book className={cn("h-4 w-4 fill-primary/10 text-primary transition-all", isViewingToday ? "scale-110 animate-pulse" : "opacity-30")} />
+                            <Book className={cn("h-4 w-4 fill-primary/10 text-primary transition-all", isViewingToday ? "scale-110 " : "opacity-30")} />
                         </h1>
                         <div className="flex items-center gap-2">
                             <CalendarIcon className="h-3 w-3 text-muted-foreground" />
@@ -123,29 +124,13 @@ export default async function DiaryPage({
                     <div className="absolute left-6 top-2 bottom-2 w-px bg-gradient-to-b from-border/50 via-border/50 to-transparent" />
 
                     {/* My Entry */}
-                    <div className="relative z-10 flex gap-4 animate-bouncy">
-                        <Avatar className="h-9 w-9 border-2 border-white shadow-sm shrink-0">
-                            <AvatarFallback className="bg-gray-900 text-white text-[10px]">
-                                {user.user_metadata?.name?.charAt(0) || user.email?.charAt(0)}
-                            </AvatarFallback>
-                        </Avatar>
-                        <div className="flex-1 space-y-2">
-                            <div className="flex items-center gap-2">
-                                <span className="text-xs font-semibold uppercase tracking-wider text-gray-900">You</span>
-                            </div>
-                            {myEntry ? (
-                                <div className="bg-white border border-border/40 rounded-2xl rounded-tl-none p-5 shadow-lg shadow-gray-200/40 text-sm leading-relaxed text-gray-800 whitespace-pre-wrap">
-                                    {myEntry.content}
-                                </div>
-                            ) : (
-                                <div className="bg-muted/30 border border-dashed border-border/60 rounded-2xl p-5 text-center">
-                                    <p className="text-xs text-muted-foreground italic">
-                                        {isViewingToday ? "Waiting for your thoughts..." : "No memo recorded."}
-                                    </p>
-                                </div>
-                            )}
-                        </div>
-                    </div>
+                    <MyDiaryEntry
+                        diaryId={diary.id}
+                        diaryDate={selectedDate}
+                        userName={user.user_metadata?.name?.charAt(0) || user.email?.charAt(0) || 'U'}
+                        entryUrlSafeDate={selectedDate}
+                        myEntry={myEntry ? { id: myEntry.id, content: myEntry.content } : undefined}
+                    />
 
                     {/* Partner Entry */}
                     {partnerMemberId && (

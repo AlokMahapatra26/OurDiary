@@ -48,16 +48,19 @@ export default async function Home() {
     <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gray-50 via-white to-gray-100 flex items-center justify-center p-4">
       <div className="w-full max-w-sm space-y-8 animate-bouncy pb-20">
         <div className="text-center space-y-2">
-          <div className="inline-flex p-3 rounded-2xl bg-white shadow-sm border border-gray-100 mb-2">
-            <Book className="h-6 w-6 text-primary fill-primary/10" />
+          <div className={cn(
+            "inline-flex rounded-3xl bg-white shadow-sm border border-gray-100 mb-2 transition-all duration-500",
+            user ? "p-3" : "p-5 mt-4"
+          )}>
+            <Book className={cn("text-primary fill-primary/10", user ? "h-6 w-6" : "h-10 w-10")} />
           </div>
-          <h1 className="text-2xl font-semibold tracking-tight text-gray-900 font-serif">OurDiary</h1>
+          <h1 className={cn("font-semibold tracking-tight text-gray-900 font-serif", user ? "text-2xl" : "text-3xl")}>OurDiary</h1>
           {user ? (
             <p className="text-sm text-muted-foreground italic">
               Welcome back, <span className="text-gray-900 not-italic font-medium">{user.user_metadata?.name?.split(' ')[0] || user.email?.split('@')[0]}</span>.
             </p>
           ) : (
-            <p className="text-sm text-muted-foreground italic">A private sanctuary for your shared memories.</p>
+            <p className="text-[15px] text-muted-foreground italic pt-1">A private sanctuary for your shared memories.</p>
           )}
         </div>
 
@@ -150,13 +153,36 @@ export default async function Home() {
             )}
           </div>
         ) : (
-          <div className="space-y-3 pt-4">
-            <Button asChild className="w-full h-12 rounded-2xl text-sm font-medium shadow-xl shadow-gray-200">
-              <Link href="/login">Sign in to your story</Link>
-            </Button>
-            <Button asChild variant="outline" className="w-full h-12 rounded-2xl text-sm font-medium border-border/60 hover:bg-white transition-all duration-200">
-              <Link href="/signup">Join OurDiary</Link>
-            </Button>
+          <div className="space-y-12 animate-bouncy pt-4">
+            {/* Minimalist Feature Showcase */}
+            <div className="grid gap-4">
+              <div className="flex items-start gap-4 p-5 rounded-[2rem] bg-white/60 border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-md transition-all hover:bg-white/80">
+                <div className="p-3 bg-primary/5 rounded-2xl text-primary shrink-0"><Clock className="h-5 w-5" /></div>
+                <div className="text-left space-y-1.5 pt-1">
+                  <p className="text-[15px] font-medium text-gray-900 leading-none">The Nightly Ritual</p>
+                  <p className="text-[13px] text-muted-foreground leading-relaxed pr-2">Write when the world is quiet. The diary window only opens from 10 PM to 2 AM.</p>
+                </div>
+              </div>
+
+              <div className="flex items-start gap-4 p-5 rounded-[2rem] bg-white/60 border border-white/80 shadow-[0_8px_30px_rgb(0,0,0,0.04)] backdrop-blur-md transition-all hover:bg-white/80">
+                <div className="p-3 bg-primary/5 rounded-2xl text-primary shrink-0"><BookOpen className="h-5 w-5" /></div>
+                <div className="text-left space-y-1.5 pt-1">
+                  <p className="text-[15px] font-medium text-gray-900 leading-none">One Shared Timeline</p>
+                  <p className="text-[13px] text-muted-foreground leading-relaxed pr-2">Your entries and theirs, beautifully woven together in a single private space.</p>
+                </div>
+              </div>
+            </div>
+
+            {/* Premium CTA Buttons */}
+            <div className="space-y-3 pt-6 relative">
+              <div className="absolute inset-0 bg-gradient-to-t from-gray-50/50 to-transparent pointer-events-none rounded-[2rem]" />
+              <Button asChild className="w-full h-14 rounded-2xl text-[15px] font-medium shadow-[0_8px_30px_rgb(0,0,0,0.08)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.12)] bg-gray-900 text-white hover:bg-gray-800 transition-all duration-300">
+                <Link href="/signup">Start your shared journey</Link>
+              </Button>
+              <Button asChild variant="ghost" className="w-full h-12 rounded-2xl text-[13px] font-medium text-muted-foreground hover:text-gray-900 hover:bg-black/5 transition-all duration-300">
+                <Link href="/login">Already have a diary? Log in</Link>
+              </Button>
+            </div>
           </div>
         )}
       </div>
