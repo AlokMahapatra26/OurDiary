@@ -12,10 +12,11 @@ export default function DeleteAccountButton() {
         }}>
             <SubmitButton
                 iconName="trash"
+                variant="ghost"
                 pendingText="Deleting..."
-                className="w-full bg-red-50 text-red-400 rounded-xl px-4 py-2 text-xs font-medium hover:bg-red-100 transition-colors cursor-pointer"
+                className="w-full text-[10px] text-muted-foreground/50 hover:text-destructive hover:bg-destructive/5 !font-normal transition-all"
             >
-                Delete account
+                Permanently delete account
             </SubmitButton>
         </form>
     )

@@ -1,7 +1,8 @@
 'use client'
 
 import { useFormStatus } from 'react-dom'
-import { Loader2, UserPlus, LogIn, Save, LogOut, Trash2, LucideIcon } from 'lucide-react'
+import { Loader2, UserPlus, LogIn, Save, LogOut, Trash2, LucideIcon, Bomb, Send, PenLine, Sparkles } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
 const iconMap: Record<string, LucideIcon> = {
     'user-plus': UserPlus,
@@ -9,6 +10,10 @@ const iconMap: Record<string, LucideIcon> = {
     'save': Save,
     'log-out': LogOut,
     'trash': Trash2,
+    'bomb': Bomb,
+    'send': Send,
+    'pen-line': PenLine,
+    'sparkles': Sparkles,
 }
 
 interface SubmitButtonProps {
@@ -16,26 +21,29 @@ interface SubmitButtonProps {
     pendingText?: string
     className?: string
     iconName?: keyof typeof iconMap
+    variant?: 'default' | 'destructive' | 'outline' | 'secondary' | 'ghost' | 'link'
 }
 
 export function SubmitButton({
     children,
     pendingText = 'Please wait...',
     className = '',
-    iconName
+    iconName,
+    variant = 'default'
 }: SubmitButtonProps) {
     const { pending } = useFormStatus()
     const Icon = iconName ? iconMap[iconName] : null
 
     return (
-        <button
+        <Button
             type="submit"
             disabled={pending}
-            className={`relative flex items-center justify-center gap-2 transition-all active:scale-[0.98] disabled:opacity-70 disabled:cursor-not-allowed ${className}`}
+            variant={variant}
+            className={className}
         >
             {pending ? (
                 <>
-                    <Loader2 className="h-4 w-4 animate-spin text-current" />
+                    <Loader2 className="h-4 w-4 animate-spin" />
                     <span>{pendingText}</span>
                 </>
             ) : (
@@ -44,6 +52,6 @@ export function SubmitButton({
                     <span>{children}</span>
                 </>
             )}
-        </button>
+        </Button>
     )
 }

@@ -2,8 +2,12 @@ import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import { logout, updateProfile } from './actions'
 import { SubmitButton } from '@/components/ui/SubmitButton'
-
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
 import DeleteAccountButton from './DeleteAccountButton'
+import { Download, LogOut, Settings, User } from 'lucide-react'
+import { Separator } from '@/components/ui/separator'
 
 export default async function ProfilePage({
     searchParams,
@@ -23,101 +27,122 @@ export default async function ProfilePage({
     const email = user.email || ''
 
     return (
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-            <div className="w-full max-w-sm pb-24">
-                <h1 className="text-xl font-medium text-gray-900 mb-2">Profile settings</h1>
-                <p className="text-sm text-gray-400 mb-8">Manage your account and preferences.</p>
-
-                {params?.error && (
-                    <div className="bg-red-50 text-red-500 px-4 py-3 rounded-xl text-sm mb-5">
-                        {params.error as string}
+        <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gray-50 via-white to-gray-100 flex items-center justify-center p-4">
+            <div className="w-full max-w-md space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 pb-24">
+                <div className="text-center space-y-2">
+                    <div className="inline-flex p-3 rounded-2xl bg-white shadow-sm border border-gray-100 mb-2">
+                        <User className="h-6 w-6 text-gray-900" />
                     </div>
-                )}
+                    <h1 className="text-2xl font-semibold tracking-tight text-gray-900">Profile Settings</h1>
+                    <p className="text-sm text-muted-foreground italic">Manage your account and preferences.</p>
+                </div>
 
-                {params?.message && (
-                    <div className="bg-gray-100 text-gray-600 px-4 py-3 rounded-xl text-sm mb-5">
-                        {params.message as string}
-                    </div>
-                )}
+                <Card className="border-border/50 shadow-xl shadow-gray-200/50 backdrop-blur-sm bg-white/80">
+                    <CardHeader className="space-y-1">
+                        <div className="flex items-center gap-2 mb-1">
+                            <Settings className="h-4 w-4 text-muted-foreground" />
+                            <span className="text-xs font-medium uppercase tracking-wider text-muted-foreground">General</span>
+                        </div>
+                        <CardTitle className="text-lg">Personal Details</CardTitle>
+                        <CardDescription>
+                            Update your profile information here.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent className="space-y-6 pb-0">
+                        {params?.error && (
+                            <div className="bg-destructive/10 text-destructive px-4 py-3 rounded-xl text-xs font-medium animate-in zoom-in-95 duration-300">
+                                {params.error as string}
+                            </div>
+                        )}
 
-                <form action={updateProfile} className="bg-white border border-gray-200 rounded-2xl p-5 space-y-4 shadow-sm">
-                    <div>
-                        <p className="text-xs text-gray-400 mb-1">Email</p>
-                        <p className="text-sm text-gray-400 select-none">{email}</p>
-                    </div>
+                        {params?.message && (
+                            <div className="bg-primary/5 text-primary px-4 py-3 rounded-xl text-xs font-medium border border-primary/10 animate-in zoom-in-95 duration-300">
+                                {params.message as string}
+                            </div>
+                        )}
 
-                    <div className="border-t border-gray-100" />
+                        <div className="space-y-2">
+                            <Label className="text-xs text-muted-foreground">Email address</Label>
+                            <p className="text-sm font-medium px-1 select-none">{email}</p>
+                        </div>
 
-                    <div>
-                        <label className="block text-xs text-gray-400 mb-1" htmlFor="name">Name</label>
-                        <input
-                            id="name"
-                            name="name"
-                            type="text"
-                            defaultValue={name}
-                            required
-                            className="w-full text-sm text-gray-900 bg-transparent border-none p-0 focus:ring-0 focus:outline-none placeholder:text-gray-200"
-                        />
-                    </div>
+                        <Separator className="bg-border/50" />
 
-                    <div className="border-t border-gray-100" />
-
-                    <div>
-                        <label className="block text-xs text-gray-400 mb-1" htmlFor="age">Age</label>
-                        <input
-                            id="age"
-                            name="age"
-                            type="number"
-                            defaultValue={age}
-                            required
-                            className="w-full text-sm text-gray-900 bg-transparent border-none p-0 focus:ring-0 focus:outline-none placeholder:text-gray-200"
-                        />
-                    </div>
-
-                    <SubmitButton
-                        iconName="save"
-                        pendingText="Saving..."
-                        className="w-full bg-gray-900 text-white rounded-xl px-4 py-2.5 text-sm font-medium hover:bg-gray-800 transition-colors mt-2 cursor-pointer"
-                    >
-                        Update profile
-                    </SubmitButton>
-                </form>
-
-                <div className="mt-8 space-y-6">
-                    <div>
-                        <p className="text-xs text-gray-400 mb-3 px-1 hover:text-gray-600 transition-colors">Manage your data</p>
-                        <a
-                            href="/api/export-diary"
-                            download
-                            className="flex items-center justify-between w-full bg-white border border-gray-200 text-gray-600 rounded-2xl px-5 py-4 text-sm hover:bg-gray-50 transition-all group active:scale-[0.98]"
-                        >
-                            <div className="flex items-center gap-3">
-                                <div className="p-2 bg-gray-50 rounded-xl group-hover:bg-white transition-colors">
-                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-download text-gray-400 group-hover:text-gray-900 transition-colors"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" x2="12" y1="15" y2="3" /></svg>
+                        <form action={updateProfile} className="space-y-6">
+                            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                <div className="space-y-2.5">
+                                    <Label htmlFor="name">Display Name</Label>
+                                    <Input
+                                        id="name"
+                                        name="name"
+                                        defaultValue={name}
+                                        required
+                                        placeholder="Your name"
+                                    />
                                 </div>
-                                <div>
-                                    <p className="font-medium text-gray-900">Export diary</p>
-                                    <p className="text-[10px] text-gray-400">Download all entries as JSON</p>
+                                <div className="space-y-2.5">
+                                    <Label htmlFor="age">Age</Label>
+                                    <Input
+                                        id="age"
+                                        name="age"
+                                        type="number"
+                                        defaultValue={age}
+                                        required
+                                        placeholder="Age"
+                                    />
                                 </div>
                             </div>
-                            <span className="text-xs text-gray-300 group-hover:text-gray-500 transition-colors">.json</span>
-                        </a>
-                    </div>
-
-                    <div className="space-y-3">
-                        <form action={logout}>
                             <SubmitButton
-                                iconName="log-out"
-                                pendingText="Logging out..."
-                                className="w-full bg-white border border-gray-200 text-gray-400 rounded-xl px-4 py-2.5 text-xs hover:bg-gray-50 hover:text-gray-600 transition-colors cursor-pointer"
+                                iconName="save"
+                                pendingText="Saving..."
+                                className="w-full h-11 rounded-xl text-sm"
                             >
-                                Log out
+                                Update Profile
                             </SubmitButton>
                         </form>
+                    </CardContent>
 
-                        <DeleteAccountButton />
+                    <div className="p-6 pt-8 space-y-8">
+                        <Separator className="bg-border/50" />
+
+                        <div className="w-full space-y-6">
+                            <div className="space-y-3">
+                                <h3 className="text-xs font-medium uppercase tracking-wider text-muted-foreground px-1">Manage Data</h3>
+                                <a
+                                    href="/api/export-diary"
+                                    download
+                                    className="flex items-center justify-between w-full bg-white border border-border/50 text-gray-600 rounded-2xl px-5 py-4 text-sm hover:bg-gray-50 transition-all group active:scale-[0.98] shadow-sm"
+                                >
+                                    <div className="flex items-center gap-3">
+                                        <div className="p-2 bg-gray-50 rounded-xl group-hover:bg-white transition-colors">
+                                            <Download className="h-4 w-4 text-muted-foreground group-hover:text-gray-900 transition-colors" />
+                                        </div>
+                                        <div>
+                                            <p className="font-medium text-gray-900">Export Diary</p>
+                                            <p className="text-[10px] text-muted-foreground">Download all entries as JSON</p>
+                                        </div>
+                                    </div>
+                                    <span className="text-[10px] font-mono text-muted-foreground group-hover:text-gray-500 transition-colors bg-gray-100 px-2 py-0.5 rounded-full">.json</span>
+                                </a>
+                            </div>
+
+                            <div className="space-y-3 pb-2">
+                                <form action={logout}>
+                                    <SubmitButton
+                                        iconName="log-out"
+                                        variant="outline"
+                                        pendingText="Logging out..."
+                                        className="w-full h-11 rounded-xl text-xs text-muted-foreground border-border/50 hover:bg-red-50 hover:text-red-500 hover:border-red-100 transition-all"
+                                    >
+                                        Log out of account
+                                    </SubmitButton>
+                                </form>
+
+                                <DeleteAccountButton />
+                            </div>
+                        </div>
                     </div>
-                </div>
+                </Card>
             </div>
         </div>
     )

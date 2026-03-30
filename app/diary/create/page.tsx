@@ -2,6 +2,11 @@ import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
 import { createDiary } from './actions'
 import { SubmitButton } from '@/components/ui/SubmitButton'
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import { BookPlus, Sparkles } from 'lucide-react'
+import Link from 'next/link'
 
 export default async function CreateDiaryPage() {
     const supabase = await createClient()
@@ -9,31 +14,51 @@ export default async function CreateDiaryPage() {
     if (!user) redirect('/login')
 
     return (
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-            <div className="w-full max-w-sm">
-                <h1 className="text-xl font-medium mb-2 text-gray-900">Create a shared diary</h1>
-                <p className="text-sm text-gray-400 mb-6">Give your diary a name, then invite your partner.</p>
-
-                <form action={createDiary} className="bg-white border border-gray-200 rounded-2xl p-5 space-y-4">
-                    <div>
-                        <label className="block text-xs text-gray-500 mb-1.5" htmlFor="name">Diary name</label>
-                        <input
-                            id="name"
-                            name="name"
-                            type="text"
-                            required
-                            placeholder="e.g. Our Story"
-                            className="w-full bg-gray-50 border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 placeholder:text-gray-300 focus:outline-none focus:border-gray-400 transition-colors"
-                        />
+        <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gray-50 via-white to-gray-100 flex items-center justify-center p-4">
+            <div className="w-full max-w-sm space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+                <div className="text-center space-y-2">
+                    <div className="inline-flex p-3 rounded-2xl bg-white shadow-sm border border-gray-100 mb-2">
+                        <BookPlus className="h-6 w-6 text-gray-900" />
                     </div>
-                    <SubmitButton
-                        iconName="save"
-                        pendingText="Creating..."
-                        className="w-full bg-gray-900 text-white rounded-xl px-4 py-2.5 text-sm font-medium hover:bg-gray-800 transition-colors cursor-pointer"
-                    >
-                        Create diary
-                    </SubmitButton>
-                </form>
+                    <h1 className="text-2xl font-semibold tracking-tight text-gray-900 font-serif">Create Shared space</h1>
+                    <p className="text-sm text-muted-foreground italic">Your journey of a thousand miles begins here.</p>
+                </div>
+
+                <Card className="border-border/50 shadow-xl shadow-gray-200/50 backdrop-blur-sm bg-white/80">
+                    <CardHeader className="space-y-1">
+                        <CardTitle className="text-lg">Diary details</CardTitle>
+                        <CardDescription>
+                            Give your diary a name to get started.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <form action={createDiary} className="space-y-5">
+                            <div className="space-y-2.5">
+                                <Label htmlFor="name">Diary Name</Label>
+                                <Input
+                                    id="name"
+                                    name="name"
+                                    type="text"
+                                    required
+                                    placeholder="e.g. Our Private Story"
+                                    autoFocus
+                                />
+                            </div>
+                            <SubmitButton
+                                iconName="sparkles"
+                                pendingText="Creating..."
+                                className="w-full h-11 rounded-xl text-sm shadow-lg shadow-gray-200"
+                            >
+                                Start our odyssey
+                            </SubmitButton>
+                        </form>
+                    </CardContent>
+                    <CardFooter className="justify-center pt-2">
+                        <Link href="/" className="text-xs text-muted-foreground hover:text-gray-900 transition-colors">
+                            Actually, let's go back
+                        </Link>
+                    </CardFooter>
+                </Card>
             </div>
         </div>
     )

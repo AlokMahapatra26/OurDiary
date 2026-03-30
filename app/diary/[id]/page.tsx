@@ -9,6 +9,11 @@ import { submitEntry } from './actions'
 import { DiaryWriteSection } from '@/components/DiaryWriteSection'
 import { DateFilter } from '@/components/DateFilter'
 import { getAdminClient } from '@/utils/supabase/admin'
+import { Button } from '@/components/ui/button'
+import { Avatar, AvatarFallback } from '@/components/ui/avatar'
+import { Badge } from '@/components/ui/badge'
+import { Bomb, Home, UserPlus, Calendar as CalendarIcon, ArrowLeft } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 export default async function DiaryPage({
     params,
@@ -49,14 +54,10 @@ export default async function DiaryPage({
         }
     }
 
-    // Today's logical status
     const { open: isWindowOpenNow, message: windowMsg, diaryDate: currentLogicalDate } = getWindowStatus()
-
-    // The date we are currently viewing
     const selectedDate = queryDate || currentLogicalDate
     const isViewingToday = selectedDate === currentLogicalDate
 
-    // Fetch entries for the selected date
     const dayEntries = await db
         .select()
         .from(entries)
@@ -64,33 +65,43 @@ export default async function DiaryPage({
 
     const myEntry = dayEntries.find(e => e.userId === user.id)
     const partnerEntry = dayEntries.find(e => e.userId !== user.id)
-
     const hasPendingInvite = members.length < 2
 
     return (
-        <div className="min-h-screen bg-gray-50 p-4">
-            <div className="w-full max-w-sm mx-auto">
+        <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gray-50 via-white to-gray-100 pb-32">
+            <div className="w-full max-w-md mx-auto p-4 space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
                 {/* Header */}
-                <div className="flex items-center justify-between mb-6">
-                    <div>
-                        <Link href="/" className="text-xs text-gray-400 hover:text-gray-600 mb-1 block">← Home</Link>
-                        <h1 className="text-lg font-medium text-gray-900">{diary.name}</h1>
-                        <DateFilter
-                            initialDate={selectedDate}
-                            label={formatDiaryDate(selectedDate)}
-                        />
+                <div className="flex flex-col gap-6 pt-4">
+                    <div className="flex items-center justify-between">
+                        <Button asChild variant="ghost" size="sm" className="h-8 px-2 -ml-2 text-muted-foreground hover:text-gray-900 group">
+                            <Link href="/">
+                                <ArrowLeft className="h-4 w-4 mr-1 transition-transform group-hover:-translate-x-0.5" />
+                                <span className="text-xs font-medium">Home</span>
+                            </Link>
+                        </Button>
+                        {hasPendingInvite && (
+                            <Button asChild variant="secondary" size="sm" className="h-8 rounded-full px-3 text-[10px] font-semibold tracking-wide uppercase">
+                                <Link href={`/diary/${id}/invite`}>
+                                    <UserPlus className="h-3 w-3 mr-1" />
+                                    Invite
+                                </Link>
+                            </Button>
+                        )}
                     </div>
-                    {hasPendingInvite && (
-                        <Link
-                            href={`/diary/${id}/invite`}
-                            className="text-xs bg-gray-100 text-gray-600 rounded-xl px-3 py-1.5 hover:bg-gray-200 transition-colors"
-                        >
-                            + Invite partner
-                        </Link>
-                    )}
+
+                    <div className="space-y-1">
+                        <h1 className="text-2xl font-semibold tracking-tight text-gray-900 flex items-center gap-2">
+                            {diary.name}
+                            <Bomb className={cn("h-4 w-4 fill-primary/10 text-primary transition-all", isViewingToday ? "scale-110 animate-pulse" : "opacity-30")} />
+                        </h1>
+                        <div className="flex items-center gap-2">
+                            <CalendarIcon className="h-3 w-3 text-muted-foreground" />
+                            <DateFilter initialDate={selectedDate} label="" />
+                        </div>
+                    </div>
                 </div>
 
-                {/* Write section (Unlockable via dev mode for any date) */}
+                {/* Write section */}
                 <DiaryWriteSection
                     diaryId={id}
                     diaryDate={selectedDate}
@@ -102,61 +113,92 @@ export default async function DiaryPage({
                 />
 
                 {!isViewingToday && (
-                    <div className="bg-gray-100/50 border border-gray-100 rounded-xl px-4 py-2 text-[10px] text-gray-400 mb-6 text-center">
-                        Viewing records for {formatDiaryDate(selectedDate)}.
-                        <Link href={`/diary/${id}`} className="ml-1 text-gray-600 hover:underline font-medium">Reset to today →</Link>
+                    <div className="flex justify-center -mt-2">
+                        <Badge variant="outline" className="text-[10px] bg-white/50 backdrop-blur-sm border-border/50 text-muted-foreground font-normal py-1 px-3 rounded-full">
+                            Archive Mode • <Link href={`/diary/${id}`} className="hover:text-primary transition-colors">Go to today</Link>
+                        </Badge>
                     </div>
                 )}
 
-                {/* Entries display */}
-                <div className="space-y-4">
-                    {myEntry ? (
-                        <div className="bg-white border border-gray-200 rounded-2xl p-5">
-                            <p className="text-xs text-gray-400 mb-2">Your entry</p>
-                            <p className="text-sm text-gray-800 whitespace-pre-wrap">{myEntry.content}</p>
+                {/* Entries display - Vertical Timeline */}
+                <div className="relative space-y-12 pl-2">
+                    {/* Decorative Timeline Line */}
+                    <div className="absolute left-6 top-2 bottom-2 w-px bg-gradient-to-b from-border/50 via-border/50 to-transparent" />
+
+                    {/* My Entry */}
+                    <div className="relative z-10 flex gap-4 animate-in fade-in slide-in-from-left-4 duration-700 delay-200">
+                        <Avatar className="h-9 w-9 border-2 border-white shadow-sm shrink-0">
+                            <AvatarFallback className="bg-gray-900 text-white text-[10px]">
+                                {user.user_metadata?.name?.charAt(0) || user.email?.charAt(0)}
+                            </AvatarFallback>
+                        </Avatar>
+                        <div className="flex-1 space-y-2">
+                            <div className="flex items-center gap-2">
+                                <span className="text-xs font-semibold uppercase tracking-wider text-gray-900">You</span>
+                            </div>
+                            {myEntry ? (
+                                <div className="bg-white border border-border/40 rounded-2xl rounded-tl-none p-5 shadow-lg shadow-gray-200/40 text-sm leading-relaxed text-gray-800 whitespace-pre-wrap">
+                                    {myEntry.content}
+                                </div>
+                            ) : (
+                                <div className="bg-muted/30 border border-dashed border-border/60 rounded-2xl p-5 text-center">
+                                    <p className="text-xs text-muted-foreground italic">
+                                        {isViewingToday ? "Waiting for your thoughts..." : "No memo recorded."}
+                                    </p>
+                                </div>
+                            )}
                         </div>
-                    ) : !isViewingToday && (
-                        <div className="bg-white/50 border border-dashed border-gray-200 rounded-2xl p-5 text-center">
-                            <p className="text-xs text-gray-300">You didn&apos;t write an entry this day.</p>
+                    </div>
+
+                    {/* Partner Entry */}
+                    {partnerMemberId && (
+                        <div className="relative z-10 flex gap-4 animate-in fade-in slide-in-from-left-4 duration-700 delay-500">
+                            <Avatar className="h-9 w-9 border-2 border-white shadow-sm shrink-0">
+                                <AvatarFallback className="bg-primary/10 text-primary text-[10px]">
+                                    {partnerName.charAt(0)}
+                                </AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1 space-y-2">
+                                <div className="flex items-center gap-2">
+                                    <span className="text-xs font-semibold uppercase tracking-wider text-gray-900">{partnerName}</span>
+                                </div>
+                                {partnerEntry ? (
+                                    <div className="bg-white border border-border/40 rounded-2xl rounded-tl-none p-5 shadow-lg shadow-gray-200/40 text-sm leading-relaxed text-gray-800 whitespace-pre-wrap">
+                                        {partnerEntry.content}
+                                    </div>
+                                ) : (
+                                    <div className="bg-muted/30 border border-dashed border-border/60 rounded-2xl p-5 text-center">
+                                        <p className="text-xs text-muted-foreground italic">
+                                            {isViewingToday ? `${partnerName} is still writing...` : `${partnerName} left no memo.`}
+                                        </p>
+                                    </div>
+                                )}
+                            </div>
                         </div>
                     )}
 
-                    {partnerMemberId ? (
-                        partnerEntry ? (
-                            <div className="bg-white border border-gray-200 rounded-2xl p-5">
-                                <p className="text-xs text-gray-400 mb-2">{partnerName}&apos;s entry</p>
-                                <p className="text-sm text-gray-800 whitespace-pre-wrap">{partnerEntry.content}</p>
+                    {!partnerMemberId && isViewingToday && (
+                        <div className="relative z-10 flex gap-4 animate-in fade-in slide-in-from-left-4 duration-700 delay-500">
+                            <Avatar className="h-9 w-9 border-2 border-white shadow-sm shrink-0">
+                                <AvatarFallback className="bg-gray-100 text-gray-300">
+                                    ?
+                                </AvatarFallback>
+                            </Avatar>
+                            <div className="flex-1 space-y-2">
+                                <div className="flex items-center gap-2">
+                                    <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Soulmate</span>
+                                </div>
+                                <div className="bg-white/40 border border-dashed border-border rounded-2xl p-8 text-center space-y-3">
+                                    <p className="text-xs text-muted-foreground">This story needs another soul.</p>
+                                    <Button asChild variant="outline" size="sm" className="h-8 rounded-full text-[10px]">
+                                        <Link href={`/diary/${id}/invite`}>Send Invitation</Link>
+                                    </Button>
+                                </div>
                             </div>
-                        ) : (
-                            <div className="bg-gray-50 border border-gray-100 rounded-2xl p-5 text-center">
-                                <p className="text-sm text-gray-400">
-                                    {isViewingToday ? `${partnerName} hasn't written yet.` : `${partnerName} didn't write an entry this day.`}
-                                </p>
-                            </div>
-                        )
-                    ) : isViewingToday && (
-                        <div className="bg-gray-50 border border-gray-100 rounded-2xl p-5 text-center">
-                            <p className="text-sm text-gray-400 mb-3">No partner joined yet.</p>
-                            <Link
-                                href={`/diary/${id}/invite`}
-                                className="text-sm text-gray-700 underline"
-                            >
-                                Invite your partner
-                            </Link>
                         </div>
                     )}
                 </div>
             </div>
         </div>
     )
-}
-
-function formatDiaryDate(date: string): string {
-    const d = new Date(date + 'T12:00:00')
-    return d.toLocaleDateString('en-IN', {
-        weekday: 'long',
-        year: 'numeric',
-        month: 'long',
-        day: 'numeric',
-    })
 }

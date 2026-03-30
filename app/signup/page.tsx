@@ -1,6 +1,10 @@
 import { signup } from './actions'
-import Link from 'next/link'
 import { SubmitButton } from '@/components/ui/SubmitButton'
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card'
+import { Input } from '@/components/ui/input'
+import { Label } from '@/components/ui/label'
+import Link from 'next/link'
+import { Bomb } from 'lucide-react'
 
 export default async function SignupPage({
     searchParams,
@@ -10,80 +14,103 @@ export default async function SignupPage({
     const params = await searchParams
 
     return (
-        <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-            <div className="w-full max-w-sm">
-                <h1 className="text-xl font-medium mb-6 text-gray-900">Create account</h1>
-
-                {params?.error && (
-                    <div className="bg-red-50 text-red-500 px-4 py-3 rounded-xl text-sm mb-5">
-                        {params.error as string}
+        <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gray-50 via-white to-gray-100 flex items-center justify-center p-4">
+            <div className="w-full max-w-sm space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000">
+                <div className="text-center space-y-2">
+                    <div className="inline-flex p-3 rounded-2xl bg-white shadow-sm border border-gray-100 mb-2">
+                        <Bomb className="h-6 w-6 text-primary fill-primary/10" />
                     </div>
-                )}
+                    <h1 className="text-2xl font-semibold tracking-tight text-gray-900">Start your journey</h1>
+                    <p className="text-sm text-muted-foreground italic">A private space for two souls.</p>
+                </div>
 
-                <form className="space-y-4" action={signup}>
-                    <div>
-                        <label className="block text-xs text-gray-500 mb-1.5" htmlFor="name">Name</label>
-                        <input
-                            id="name"
-                            name="name"
-                            type="text"
-                            required
-                            placeholder="Your name"
-                            className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 placeholder:text-gray-300 focus:outline-none focus:border-gray-400 transition-colors"
-                        />
-                    </div>
+                <Card className="border-border/50 shadow-xl shadow-gray-200/50 backdrop-blur-sm bg-white/80">
+                    <CardHeader className="space-y-1">
+                        <CardTitle className="text-lg">Create account</CardTitle>
+                        <CardDescription>
+                            Sign up to begin your shared diary.
+                        </CardDescription>
+                    </CardHeader>
+                    <CardContent>
+                        <form action={signup} className="space-y-5">
+                            {params?.error && (
+                                <div className="bg-destructive/10 text-destructive px-4 py-3 rounded-xl text-xs font-medium animate-in zoom-in-95 duration-300">
+                                    {params.error as string}
+                                </div>
+                            )}
 
-                    <div>
-                        <label className="block text-xs text-gray-500 mb-1.5" htmlFor="age">Age</label>
-                        <input
-                            id="age"
-                            name="age"
-                            type="number"
-                            required
-                            min="1"
-                            max="120"
-                            placeholder="Your age"
-                            className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 placeholder:text-gray-300 focus:outline-none focus:border-gray-400 transition-colors"
-                        />
-                    </div>
+                            <div className="grid grid-cols-2 gap-4">
+                                <div className="space-y-2.5">
+                                    <Label htmlFor="name">Name</Label>
+                                    <Input
+                                        id="name"
+                                        name="name"
+                                        type="text"
+                                        placeholder="Alex"
+                                        required
+                                    />
+                                </div>
+                                <div className="space-y-2.5">
+                                    <Label htmlFor="age">Age</Label>
+                                    <Input
+                                        id="age"
+                                        name="age"
+                                        type="number"
+                                        placeholder="24"
+                                        required
+                                        min="1"
+                                        max="120"
+                                    />
+                                </div>
+                            </div>
 
-                    <div>
-                        <label className="block text-xs text-gray-500 mb-1.5" htmlFor="email">Email</label>
-                        <input
-                            id="email"
-                            name="email"
-                            type="email"
-                            required
-                            placeholder="you@email.com"
-                            className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 placeholder:text-gray-300 focus:outline-none focus:border-gray-400 transition-colors"
-                        />
-                    </div>
+                            <div className="space-y-2.5">
+                                <Label htmlFor="email">Email</Label>
+                                <Input
+                                    id="email"
+                                    name="email"
+                                    type="email"
+                                    placeholder="name@example.com"
+                                    required
+                                    autoComplete="email"
+                                />
+                            </div>
 
-                    <div>
-                        <label className="block text-xs text-gray-500 mb-1.5" htmlFor="password">Password</label>
-                        <input
-                            id="password"
-                            name="password"
-                            type="password"
-                            required
-                            minLength={6}
-                            placeholder="Min 6 characters"
-                            className="w-full bg-white border border-gray-200 rounded-xl px-4 py-2.5 text-sm text-gray-900 placeholder:text-gray-300 focus:outline-none focus:border-gray-400 transition-colors"
-                        />
-                    </div>
+                            <div className="space-y-2.5">
+                                <Label htmlFor="password">Password</Label>
+                                <Input
+                                    id="password"
+                                    name="password"
+                                    type="password"
+                                    required
+                                    autoComplete="new-password"
+                                    placeholder="Min 6 characters"
+                                />
+                            </div>
 
-                    <SubmitButton
-                        iconName="user-plus"
-                        pendingText="Creating account..."
-                        className="w-full bg-gray-900 text-white rounded-xl px-4 py-2.5 text-sm font-medium hover:bg-gray-800 transition-colors mt-2 cursor-pointer"
-                    >
-                        Sign up
-                    </SubmitButton>
-                </form>
+                            <SubmitButton
+                                iconName="user-plus"
+                                pendingText="Creating account..."
+                                className="w-full h-11 rounded-xl text-sm"
+                            >
+                                Get started
+                            </SubmitButton>
+                        </form>
+                    </CardContent>
+                    <CardFooter className="flex flex-col space-y-4 pt-2">
+                        <div className="text-center text-xs text-muted-foreground">
+                            Already have an account?{' '}
+                            <Link href="/login" className="text-primary font-medium hover:underline underline-offset-4 transition-all">
+                                Log in
+                            </Link>
+                        </div>
+                    </CardFooter>
+                </Card>
 
-                <p className="text-center text-xs text-gray-400 mt-6">
-                    Already have an account?{' '}
-                    <Link href="/login" className="text-gray-900 hover:underline">Log in</Link>
+                <p className="px-8 text-center text-[10px] text-muted-foreground leading-relaxed">
+                    By joining, you agree to our{' '}
+                    <span className="hover:text-primary cursor-pointer transition-colors underline decoration-dotted">Terms of Service</span> and{' '}
+                    <span className="hover:text-primary cursor-pointer transition-colors underline decoration-dotted">Privacy Policy</span>.
                 </p>
             </div>
         </div>

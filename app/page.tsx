@@ -1,10 +1,14 @@
 import { createClient } from '@/utils/supabase/server'
-import Link from 'next/link'
 import { db } from '@/db'
 import { diaryMembers, diaries, invitations } from '@/db/schema'
 import { eq, and } from 'drizzle-orm'
 import { acceptInvitation, declineInvitation } from './invitations/actions'
 import { SubmitButton } from '@/components/ui/SubmitButton'
+import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card'
+import { Button } from '@/components/ui/button'
+import Link from 'next/link'
+import { Bomb, Plus, Mail, ArrowRight, BookOpen, Clock } from 'lucide-react'
+import { cn } from '@/lib/utils'
 
 export default async function Home() {
   const supabase = await createClient()
@@ -14,7 +18,6 @@ export default async function Home() {
   let pendingInvitations: any[] = []
 
   if (user) {
-    // Get user's diaries
     const memberships = await db
       .select({ diaryId: diaryMembers.diaryId, name: diaries.name })
       .from(diaryMembers)
@@ -22,7 +25,6 @@ export default async function Home() {
       .where(eq(diaryMembers.userId, user.id))
     userDiaries = memberships.map(m => ({ id: m.diaryId, name: m.name }))
 
-    // Get pending invitations only if the user doesn't have a diary yet
     if (userDiaries.length === 0) {
       pendingInvitations = await db
         .select({
@@ -43,103 +45,118 @@ export default async function Home() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="w-full max-w-sm">
-        <div className="text-center mb-8">
-          <h1 className="text-xl font-medium text-gray-900 mb-1">OurDiary</h1>
-          <p className="text-sm text-gray-400">A shared space for your thoughts.</p>
+    <div className="min-h-screen bg-[radial-gradient(ellipse_at_top,_var(--tw-gradient-stops))] from-gray-50 via-white to-gray-100 flex items-center justify-center p-4">
+      <div className="w-full max-w-sm space-y-8 animate-in fade-in slide-in-from-bottom-4 duration-1000 pb-20">
+        <div className="text-center space-y-2">
+          <div className="inline-flex p-3 rounded-2xl bg-white shadow-sm border border-gray-100 mb-2">
+            <Bomb className="h-6 w-6 text-primary fill-primary/10" />
+          </div>
+          <h1 className="text-2xl font-semibold tracking-tight text-gray-900 font-serif">OurDiary</h1>
+          {user ? (
+            <p className="text-sm text-muted-foreground italic">
+              Welcome back, <span className="text-gray-900 not-italic font-medium">{user.user_metadata?.name?.split(' ')[0] || user.email?.split('@')[0]}</span>.
+            </p>
+          ) : (
+            <p className="text-sm text-muted-foreground italic">A private sanctuary for your shared memories.</p>
+          )}
         </div>
 
         {user ? (
-          <div className="space-y-3">
-            <p className="text-center text-sm text-gray-500 mb-4">
-              Welcome, <span className="text-gray-900">{user.user_metadata?.name || user.email}</span>
-            </p>
-
+          <div className="space-y-6">
             {userDiaries.length > 0 ? (
-              /* User already has a diary — show it */
-              <div className="bg-white border border-gray-200 rounded-2xl p-4 space-y-2">
-                <p className="text-xs text-gray-400 mb-2">Your diary</p>
+              <div className="space-y-4">
+                <div className="flex items-center gap-2 px-1">
+                  <BookOpen className="h-4 w-4 text-muted-foreground/60" />
+                  <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground/60">Your Memoirs</span>
+                </div>
                 {userDiaries.map(d => (
-                  <Link
-                    key={d.id}
-                    href={`/diary/${d.id}`}
-                    className="flex items-center justify-between px-3 py-2.5 rounded-xl hover:bg-gray-50 transition-colors"
-                  >
-                    <span className="text-sm text-gray-800">{d.name}</span>
-                    <span className="text-xs text-gray-400">Open →</span>
-                  </Link>
+                  <Card key={d.id} className="group border-border/40 shadow-lg shadow-gray-200/40 hover:shadow-xl hover:shadow-gray-200/60 transition-all duration-500 overflow-hidden bg-white/80 backdrop-blur-sm">
+                    <Link href={`/diary/${d.id}`} className="block p-5">
+                      <div className="flex items-center justify-between">
+                        <div className="space-y-1">
+                          <h3 className="text-base font-semibold text-gray-900 group-hover:text-primary transition-colors">{d.name}</h3>
+                          <div className="flex items-center gap-2 text-xs text-muted-foreground">
+                            <Clock className="h-3 w-3" />
+                            <span>Last updated recently</span>
+                          </div>
+                        </div>
+                        <div className="p-2 rounded-full bg-gray-50 group-hover:bg-primary/5 transition-colors">
+                          <ArrowRight className="h-4 w-4 text-gray-400 group-hover:text-primary transition-all group-hover:translate-x-0.5" />
+                        </div>
+                      </div>
+                    </Link>
+                  </Card>
                 ))}
               </div>
             ) : (
-              /* No diary yet — show create & pending invitations */
-              <div className="space-y-6">
-                <Link
-                  href="/diary/create"
-                  className="block bg-gray-900 text-white rounded-xl px-4 py-2.5 text-sm font-medium hover:bg-gray-800 transition-colors text-center"
-                >
-                  Create shared diary
-                </Link>
+              <div className="space-y-8">
+                <Card className="border-dashed border-2 border-border/60 bg-transparent py-10 shadow-none">
+                  <CardContent className="flex flex-col items-center text-center space-y-6 p-6">
+                    <div className="p-4 rounded-full bg-white shadow-sm border border-gray-100">
+                      <Plus className="h-6 w-6 text-muted-foreground" />
+                    </div>
+                    <div className="space-y-2">
+                      <h3 className="text-base font-medium">New Beginnings</h3>
+                      <p className="text-xs text-muted-foreground max-w-[200px]">Create your shared space and invite your special person.</p>
+                    </div>
+                    <Button asChild className="rounded-full px-8 h-10 text-sm shadow-lg shadow-gray-200">
+                      <Link href="/diary/create">Create Diary</Link>
+                    </Button>
+                  </CardContent>
+                </Card>
 
                 {pendingInvitations.length > 0 && (
-                  <div className="pt-2">
-                    <p className="text-xs text-gray-400 mb-3 px-1">Pending invitations</p>
-                    <div className="space-y-3">
-                      {pendingInvitations.map(inv => (
-                        <div key={inv.id} className="bg-white border border-gray-200 rounded-2xl p-4">
-                          <p className="text-sm text-gray-800 font-medium mb-0.5">{inv.diaryName}</p>
-                          <p className="text-xs text-gray-400 mb-4">
-                            Invited {new Date(inv.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'short' })}
-                          </p>
-                          <div className="flex gap-2">
-                            <form action={acceptInvitation} className="flex-1">
-                              <input type="hidden" name="invitationId" value={inv.id} />
-                              <input type="hidden" name="diaryId" value={inv.diaryId} />
-                              <SubmitButton
-                                iconName="log-in"
-                                pendingText="Joining..."
-                                className="w-full bg-gray-900 text-white rounded-xl px-3 py-2 text-xs font-medium hover:bg-gray-800 transition-colors cursor-pointer"
-                              >
-                                Accept
-                              </SubmitButton>
-                            </form>
-                            <form action={declineInvitation} className="flex-1">
-                              <input type="hidden" name="invitationId" value={inv.id} />
-                              <SubmitButton
-                                iconName="trash"
-                                pendingText="Declining..."
-                                className="w-full bg-gray-100 text-gray-500 rounded-xl px-3 py-2 text-xs hover:bg-gray-200 transition-colors cursor-pointer"
-                              >
-                                Decline
-                              </SubmitButton>
-                            </form>
-                          </div>
-                        </div>
-                      ))}
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-2 px-1">
+                      <Mail className="h-4 w-4 text-primary" />
+                      <span className="text-xs font-semibold uppercase tracking-wider text-primary">Pending Invitations</span>
                     </div>
+                    {pendingInvitations.map(inv => (
+                      <Card key={inv.id} className="border-primary/20 bg-primary/5 shadow-sm overflow-hidden">
+                        <CardHeader className="pb-3 pt-4 px-5">
+                          <CardTitle className="text-sm font-semibold">{inv.diaryName}</CardTitle>
+                          <CardDescription className="text-[10px]">
+                            Received on {new Date(inv.createdAt).toLocaleDateString()}
+                          </CardDescription>
+                        </CardHeader>
+                        <CardFooter className="flex gap-2 p-4 pt-0">
+                          <form action={acceptInvitation} className="flex-1">
+                            <input type="hidden" name="invitationId" value={inv.id} />
+                            <input type="hidden" name="diaryId" value={inv.diaryId} />
+                            <SubmitButton
+                              iconName="bomb"
+                              pendingText="..."
+                              className="w-full h-9 rounded-xl text-xs"
+                            >
+                              Join Now
+                            </SubmitButton>
+                          </form>
+                          <form action={declineInvitation} className="flex-1">
+                            <input type="hidden" name="invitationId" value={inv.id} />
+                            <SubmitButton
+                              variant="ghost"
+                              pendingText="..."
+                              className="w-full h-9 rounded-xl text-xs text-muted-foreground hover:bg-red-50 hover:text-red-500"
+                            >
+                              Decline
+                            </SubmitButton>
+                          </form>
+                        </CardFooter>
+                      </Card>
+                    ))}
                   </div>
                 )}
               </div>
             )}
-
-            <p className="text-center text-xs text-gray-300 mt-4">
-              Your personal diary space.
-            </p>
           </div>
         ) : (
-          <div className="space-y-3">
-            <Link
-              href="/login"
-              className="block bg-gray-900 text-white rounded-xl px-4 py-2.5 text-sm font-medium hover:bg-gray-800 transition-colors text-center"
-            >
-              Log in
-            </Link>
-            <Link
-              href="/signup"
-              className="block bg-white border border-gray-200 text-gray-500 rounded-xl px-4 py-2.5 text-sm hover:bg-gray-100 transition-colors text-center"
-            >
-              Create account
-            </Link>
+          <div className="space-y-3 pt-4">
+            <Button asChild className="w-full h-12 rounded-2xl text-sm font-medium shadow-xl shadow-gray-200">
+              <Link href="/login">Sign in to your story</Link>
+            </Button>
+            <Button asChild variant="outline" className="w-full h-12 rounded-2xl text-sm font-medium border-border/60 hover:bg-white transition-all">
+              <Link href="/signup">Join OurDiary</Link>
+            </Button>
           </div>
         )}
       </div>

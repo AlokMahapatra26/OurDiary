@@ -1,44 +1,70 @@
 'use client'
 
+import * as React from "react"
 import { useRouter, usePathname, useSearchParams } from 'next/navigation'
-import { Calendar } from 'lucide-react'
+import { format, parseISO } from "date-fns"
+import { Calendar as CalendarIcon, ChevronDown } from "lucide-react"
+
+import { cn } from "@/lib/utils"
+import { Button } from "@/components/ui/button"
+import { Calendar } from "@/components/ui/calendar"
+import {
+    Popover,
+    PopoverContent,
+    PopoverTrigger,
+} from "@/components/ui/popover"
 
 interface DateFilterProps {
     initialDate: string // YYYY-MM-DD
-    label: string // Formatted date string
+    label: string // Formatted date string (we'll ignore this and use date-fns internally)
 }
 
-export function DateFilter({ initialDate, label }: DateFilterProps) {
+export function DateFilter({ initialDate }: DateFilterProps) {
     const router = useRouter()
     const pathname = usePathname()
     const searchParams = useSearchParams()
 
-    const handleDateChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const newDate = e.target.value
+    const [date, setDate] = React.useState<Date | undefined>(
+        initialDate ? parseISO(initialDate) : new Date()
+    )
+
+    const handleSelect = (selectedDate: Date | undefined) => {
+        if (!selectedDate) return
+
+        setDate(selectedDate)
+        const formattedDate = format(selectedDate, "yyyy-MM-dd")
+
         const params = new URLSearchParams(searchParams.toString())
-        if (newDate) {
-            params.set('date', newDate)
-        } else {
-            params.delete('date')
-        }
+        params.set('date', formattedDate)
+
         router.push(`${pathname}?${params.toString()}`)
     }
 
     return (
-        <div className="relative inline-flex items-center group">
-            <div className="flex flex-col">
-                <p className="text-xs text-gray-400 mt-0.5 pointer-events-none group-hover:text-gray-600 transition-colors flex items-center gap-1.5">
-                    {label}
-                    <Calendar size={12} className="opacity-0 group-hover:opacity-100 transition-opacity" />
-                </p>
-            </div>
-            <input
-                type="date"
-                defaultValue={initialDate}
-                onChange={handleDateChange}
-                className="absolute inset-0 w-full h-full opacity-0 cursor-pointer"
-                title="Select date"
-            />
-        </div>
+        <Popover>
+            <PopoverTrigger asChild>
+                <Button
+                    variant="ghost"
+                    className={cn(
+                        "h-auto p-0 hover:bg-transparent text-muted-foreground hover:text-gray-900 group transition-all font-normal flex items-center gap-1.5",
+                        !date && "text-muted-foreground"
+                    )}
+                >
+                    <span className="text-xs">
+                        {date ? format(date, "EEEE, MMMM d, yyyy") : "Select date"}
+                    </span>
+                    <ChevronDown className="h-3 w-3 opacity-0 group-hover:opacity-100 transition-all duration-300 translate-y-0 group-hover:translate-y-0.5" />
+                </Button>
+            </PopoverTrigger>
+            <PopoverContent className="w-auto p-0" align="start">
+                <Calendar
+                    mode="single"
+                    selected={date}
+                    onSelect={handleSelect}
+                    initialFocus
+                    className="rounded-2xl"
+                />
+            </PopoverContent>
+        </Popover>
     )
 }
