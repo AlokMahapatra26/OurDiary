@@ -2,7 +2,7 @@
 
 import Link from 'next/link'
 import { usePathname } from 'next/navigation'
-import { Book, Home, User } from 'lucide-react'
+import { Book, Home, User, Info } from 'lucide-react'
 import { cn } from '@/lib/utils'
 
 export function BottomNav() {
@@ -10,6 +10,7 @@ export function BottomNav() {
 
     const tabs = [
         { name: 'Home', href: '/', icon: Home },
+        { name: 'About', href: '/about', icon: Info },
         { name: 'Profile', href: '/profile', icon: User },
     ]
 
