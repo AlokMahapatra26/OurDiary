@@ -8,6 +8,7 @@ interface DiaryWriteFormProps {
     diaryDate: string
     isWindowOpen: boolean
     hasExistingEntry: boolean
+    isViewingToday: boolean
     windowMessage: string
     submitAction: (formData: FormData) => void
 }
@@ -17,22 +18,25 @@ export function DiaryWriteSection({
     diaryDate,
     isWindowOpen,
     hasExistingEntry,
+    isViewingToday,
     windowMessage,
     submitAction,
 }: DiaryWriteFormProps) {
     const [devMode, setDevMode] = useState(false)
-    const canWrite = (isWindowOpen || devMode) && !hasExistingEntry
+    const canWrite = ((isViewingToday && isWindowOpen) || devMode) && !hasExistingEntry
 
     return (
         <>
             {/* Window status */}
             <div className={`rounded-xl px-4 py-3 text-sm mb-6 ${canWrite ? 'bg-green-50 text-green-700' : 'bg-gray-100 text-gray-500'
                 }`}>
-                {devMode && !isWindowOpen
-                    ? '🛠️ Dev mode — writing is unlocked.'
+                {devMode
+                    ? `🛠️ Dev mode — writing is unlocked for ${isViewingToday ? 'today' : diaryDate}.`
                     : hasExistingEntry
-                        ? "You've already written your entry for today."
-                        : windowMessage}
+                        ? "You've already written your entry for this day."
+                        : isViewingToday
+                            ? windowMessage
+                            : "The diary is closed for this past date."}
             </div>
 
             {/* Write form */}
@@ -67,8 +71,8 @@ export function DiaryWriteSection({
                 type="button"
                 onClick={() => setDevMode(prev => !prev)}
                 className={`fixed bottom-4 right-4 z-50 text-[10px] px-3 py-1.5 rounded-full border transition-all cursor-pointer ${devMode
-                        ? 'bg-green-50 border-green-200 text-green-600'
-                        : 'bg-gray-50 border-gray-200 text-gray-400'
+                    ? 'bg-green-50 border-green-200 text-green-600'
+                    : 'bg-gray-50 border-gray-200 text-gray-400'
                     }`}
             >
                 {devMode ? '🟢 Dev mode' : '⚪ Dev off'}

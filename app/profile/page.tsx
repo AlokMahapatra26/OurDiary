@@ -24,8 +24,9 @@ export default async function ProfilePage({
 
     return (
         <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-            <div className="w-full max-w-sm">
-                <h1 className="text-xl font-medium mb-6 text-gray-900">Your profile</h1>
+            <div className="w-full max-w-sm pb-24">
+                <h1 className="text-xl font-medium text-gray-900 mb-2">Profile settings</h1>
+                <p className="text-sm text-gray-400 mb-8">Manage your account and preferences.</p>
 
                 {params?.error && (
                     <div className="bg-red-50 text-red-500 px-4 py-3 rounded-xl text-sm mb-5">
@@ -39,7 +40,7 @@ export default async function ProfilePage({
                     </div>
                 )}
 
-                <form action={updateProfile} className="bg-white border border-gray-200 rounded-2xl p-5 space-y-4">
+                <form action={updateProfile} className="bg-white border border-gray-200 rounded-2xl p-5 space-y-4 shadow-sm">
                     <div>
                         <p className="text-xs text-gray-400 mb-1">Email</p>
                         <p className="text-sm text-gray-400 select-none">{email}</p>
@@ -82,18 +83,40 @@ export default async function ProfilePage({
                     </SubmitButton>
                 </form>
 
-                <div className="mt-8 space-y-3">
-                    <form action={logout}>
-                        <SubmitButton
-                            iconName="log-out"
-                            pendingText="Logging out..."
-                            className="w-full bg-white border border-gray-200 text-gray-500 rounded-xl px-4 py-2.5 text-sm hover:bg-gray-100 transition-colors cursor-pointer"
+                <div className="mt-8 space-y-6">
+                    <div>
+                        <p className="text-xs text-gray-400 mb-3 px-1 hover:text-gray-600 transition-colors">Manage your data</p>
+                        <a
+                            href="/api/export-diary"
+                            download
+                            className="flex items-center justify-between w-full bg-white border border-gray-200 text-gray-600 rounded-2xl px-5 py-4 text-sm hover:bg-gray-50 transition-all group active:scale-[0.98]"
                         >
-                            Log out
-                        </SubmitButton>
-                    </form>
+                            <div className="flex items-center gap-3">
+                                <div className="p-2 bg-gray-50 rounded-xl group-hover:bg-white transition-colors">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-download text-gray-400 group-hover:text-gray-900 transition-colors"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /><polyline points="7 10 12 15 17 10" /><line x1="12" x2="12" y1="15" y2="3" /></svg>
+                                </div>
+                                <div>
+                                    <p className="font-medium text-gray-900">Export diary</p>
+                                    <p className="text-[10px] text-gray-400">Download all entries as JSON</p>
+                                </div>
+                            </div>
+                            <span className="text-xs text-gray-300 group-hover:text-gray-500 transition-colors">.json</span>
+                        </a>
+                    </div>
 
-                    <DeleteAccountButton />
+                    <div className="space-y-3">
+                        <form action={logout}>
+                            <SubmitButton
+                                iconName="log-out"
+                                pendingText="Logging out..."
+                                className="w-full bg-white border border-gray-200 text-gray-400 rounded-xl px-4 py-2.5 text-xs hover:bg-gray-50 hover:text-gray-600 transition-colors cursor-pointer"
+                            >
+                                Log out
+                            </SubmitButton>
+                        </form>
+
+                        <DeleteAccountButton />
+                    </div>
                 </div>
             </div>
         </div>

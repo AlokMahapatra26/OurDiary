@@ -2,7 +2,7 @@
 
 import { createClient } from '@/utils/supabase/server'
 import { redirect } from 'next/navigation'
-import { createClient as createAdminClient } from '@supabase/supabase-js'
+import { getAdminClient } from '@/utils/supabase/admin'
 
 export async function logout() {
     const supabase = await createClient()
@@ -35,19 +35,7 @@ export async function deleteAccount() {
         redirect('/login')
     }
 
-    const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY
-    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL
-
-    if (!serviceRoleKey || !supabaseUrl) {
-        redirect('/profile?error=Service+role+key+missing.+Cannot+delete+account.')
-    }
-
-    const adminClient = createAdminClient(supabaseUrl, serviceRoleKey, {
-        auth: {
-            autoRefreshToken: false,
-            persistSession: false
-        }
-    })
+    const adminClient = getAdminClient()
 
     const { error } = await adminClient.auth.admin.deleteUser(user.id)
 

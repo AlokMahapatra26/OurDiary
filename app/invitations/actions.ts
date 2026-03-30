@@ -16,8 +16,8 @@ export async function acceptInvitation(formData: FormData) {
 
     // Verify invitation exists and is for this user's email
     const [inv] = await db.select().from(invitations).where(eq(invitations.id, invitationId))
-    if (!inv || inv.invitedEmail !== user.email?.toLowerCase()) redirect('/invitations')
-    if (inv.status !== 'pending') redirect('/invitations')
+    if (!inv || inv.invitedEmail !== user.email?.toLowerCase()) redirect('/')
+    if (inv.status !== 'pending') redirect('/')
 
     // Add user to diary members
     await db.insert(diaryMembers).values({
@@ -39,9 +39,9 @@ export async function declineInvitation(formData: FormData) {
     const invitationId = formData.get('invitationId') as string
 
     const [inv] = await db.select().from(invitations).where(eq(invitations.id, invitationId))
-    if (!inv || inv.invitedEmail !== user.email?.toLowerCase()) redirect('/invitations')
+    if (!inv || inv.invitedEmail !== user.email?.toLowerCase()) redirect('/')
 
     await db.update(invitations).set({ status: 'declined' }).where(eq(invitations.id, invitationId))
 
-    redirect('/invitations')
+    redirect('/')
 }

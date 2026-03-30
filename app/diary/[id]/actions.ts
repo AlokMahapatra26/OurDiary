@@ -15,7 +15,9 @@ export async function submitEntry(formData: FormData) {
     const diaryId = formData.get('diaryId') as string
     const content = (formData.get('content') as string)?.trim()
     const devMode = formData.get('devMode') === 'true'
-    if (!content || !diaryId) return
+    const submittedDate = formData.get('diaryDate') as string
+
+    if (!content || !diaryId || !submittedDate) return
 
     // Verify user is a member
     const [membership] = await db
@@ -24,29 +26,34 @@ export async function submitEntry(formData: FormData) {
         .where(and(eq(diaryMembers.diaryId, diaryId), eq(diaryMembers.userId, user.id)))
     if (!membership) redirect('/')
 
-    // Verify writing window (skip in dev mode)
-    if (!devMode && !isWritingWindow()) {
-        redirect(`/diary/${diaryId}?error=The+diary+is+closed+right+now.+Come+back+at+10+PM.`)
+    const currentLogicalDate = getDiaryDate()
+
+    if (!devMode) {
+        // Strict checks for production mode
+        if (!isWritingWindow()) {
+            redirect(`/diary/${diaryId}?error=The+diary+is+closed+right+now.+Come+back+at+10+PM.`)
+        }
+        if (submittedDate !== currentLogicalDate) {
+            redirect(`/diary/${diaryId}?error=You+can+only+write+for+today.`)
+        }
     }
 
-    const diaryDate = getDiaryDate()
-
-    // Check if already submitted
+    // Check if already submitted for this date/user
     const [existing] = await db
         .select()
         .from(entries)
-        .where(and(eq(entries.diaryId, diaryId), eq(entries.userId, user.id), eq(entries.diaryDate, diaryDate)))
+        .where(and(eq(entries.diaryId, diaryId), eq(entries.userId, user.id), eq(entries.diaryDate, submittedDate)))
 
     if (existing) {
-        redirect(`/diary/${diaryId}?error=You+already+wrote+an+entry+today.`)
+        redirect(`/diary/${diaryId}?date=${submittedDate}&error=You+already+wrote+an+entry+for+this+date.`)
     }
 
     await db.insert(entries).values({
         diaryId,
         userId: user.id,
         content,
-        diaryDate,
+        diaryDate: submittedDate,
     })
 
-    redirect(`/diary/${diaryId}`)
+    redirect(`/diary/${diaryId}?date=${submittedDate}`)
 }

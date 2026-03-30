@@ -24,5 +24,5 @@ export async function signup(formData: FormData) {
         redirect(`/signup?error=${encodeURIComponent(error.message)}`)
     }
 
-    redirect('/profile')
+    redirect('/')
 }
