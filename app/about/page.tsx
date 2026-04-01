@@ -93,12 +93,7 @@ export default function AboutPage() {
                     </div>
                 </section>
 
-                {/* Footer Quote */}
-                <div className="pt-4 text-center">
-                    <p className="text-[10px] text-muted-foreground uppercase tracking-[0.2em] font-medium opacity-50">
-                        Made with love for the special one.
-                    </p>
-                </div>
+
             </div>
         </div>
     )

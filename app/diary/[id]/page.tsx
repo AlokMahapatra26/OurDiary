@@ -168,7 +168,7 @@ export default async function DiaryPage({
                             </Avatar>
                             <div className="flex-1 space-y-2">
                                 <div className="flex items-center gap-2">
-                                    <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Soulmate</span>
+                                    <span className="text-xs font-semibold uppercase tracking-wider text-muted-foreground">Bestie/Friend</span>
                                 </div>
                                 <div className="bg-white/40 border border-dashed border-border rounded-2xl p-8 text-center space-y-3">
                                     <p className="text-xs text-muted-foreground">This story needs another soul.</p>
